@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/db";
 import Product from "@/models/Product";
 import Category from "@/models/Category";
 import { adminGuard } from "@/lib/guard";
+import { refreshSite } from "@/lib/revalidate";
 import { parseProduct } from "@/lib/adminProduct";
 
 export const runtime = "nodejs";
@@ -19,6 +20,7 @@ export async function PUT(req, { params }) {
     const update = { $set: { ...rest, ...(oldPrice ? { oldPrice } : {}) }, ...(oldPrice ? {} : { $unset: { oldPrice: 1 } }) };
     const r = await Product.updateOne({ slug: params.slug }, update);
     if (!r.matchedCount) return err("Product not found", 404);
+    refreshSite("products");
     return NextResponse.json({ ok: true });
   } catch (e) {
     console.error("Update product error:", e.message);
@@ -31,5 +33,6 @@ export async function DELETE(req, { params }) {
   if (denied) return denied;
   await connectDB();
   await Product.deleteOne({ slug: params.slug });
+  refreshSite("products");
   return NextResponse.json({ ok: true });
 }

@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/db";
 import Product from "@/models/Product";
 import Category from "@/models/Category";
 import { adminGuard } from "@/lib/guard";
+import { refreshSite } from "@/lib/revalidate";
 import { parseProduct } from "@/lib/adminProduct";
 
 export const runtime = "nodejs";
@@ -16,6 +17,7 @@ export async function POST(req) {
     const { data, error } = parseProduct(await req.json().catch(() => null), await Category.find().lean(), { creating: true });
     if (error) return err(error);
     await Product.create(data);
+    refreshSite("products");
     return NextResponse.json({ slug: data.slug });
   } catch (e) {
     if (e.code === 11000) return err("A product with this slug already exists");

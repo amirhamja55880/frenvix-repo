@@ -31,7 +31,7 @@ export default function ProductClient({ p }) {
   return (
     <div className="pd">
       <div>
-        <ProductImage product={p} color={color} index={img} />
+        <ProductImage product={p} color={color} index={img} priority />
         {p.images?.length > 1 && <div className="thumbs" style={{ marginTop: 10 }}>{p.images.map((u, k) => <button key={k} className={`thumb2 ${k === img ? "cur" : ""}`} onClick={() => setImg(k)} aria-label={`Image ${k + 1}`}>{/* eslint-disable-next-line @next/next/no-img-element */}<img src={cdn(u, 160)} alt="" /></button>)}</div>}
       </div>
       <div className="pdinfo">

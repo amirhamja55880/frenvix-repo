@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Category from "@/models/Category";
 import { adminGuard } from "@/lib/guard";
+import { refreshSite } from "@/lib/revalidate";
 import { parseCategory, slugify } from "@/lib/adminProduct";
 
 export const runtime = "nodejs";
@@ -17,6 +18,7 @@ export async function POST(req) {
   try {
     await connectDB();
     await Category.create({ ...data, slug });
+    refreshSite("categories");
     return NextResponse.json({ slug });
   } catch (e) {
     if (e.code === 11000) return err("A category with this name already exists");

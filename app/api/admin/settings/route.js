@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Settings from "@/models/Settings";
 import { adminGuard } from "@/lib/guard";
+import { refreshSite } from "@/lib/revalidate";
 import { DIVISIONS } from "@/lib/bd-geo";
 
 export const runtime = "nodejs";
@@ -20,5 +21,6 @@ export async function PUT(req) {
   if (![inside, outside].every((n) => Number.isInteger(n) && n >= 0 && n <= 5000)) return err("Delivery charges must be whole numbers between 0 and 5000");
   await connectDB();
   await Settings.updateOne({ key: "main" }, { $set: { phone, email, homeDistrict: b.homeDistrict, deliveryInsideKhulna: inside, deliveryOutsideKhulna: outside } }, { upsert: true });
+  refreshSite("settings");
   return NextResponse.json({ ok: true });
 }

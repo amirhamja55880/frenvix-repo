@@ -9,7 +9,6 @@ import { getSettings, getMenu } from "@/lib/data";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font", display: "swap" });
 
-export const dynamic = "force-dynamic"; // always read fresh data from MongoDB
 export const metadata = {
   title: { default: "FRENVIX | Hoodies, Sweatshirts & Henleys", template: "%s | FRENVIX" },
   description: "Heavyweight hoodies, sweatshirts and henleys. Order without an account. Cash on delivery in Bangladesh.",

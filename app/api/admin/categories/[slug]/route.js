@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/db";
 import Category from "@/models/Category";
 import Product from "@/models/Product";
 import { adminGuard } from "@/lib/guard";
+import { refreshSite } from "@/lib/revalidate";
 import { parseCategory } from "@/lib/adminProduct";
 
 export const runtime = "nodejs";
@@ -26,6 +27,7 @@ export async function PUT(req, { params }) {
     if (data.name !== old.name) await Product.updateMany({ category: old.name }, { $set: { category: data.name } });
     Object.assign(old, data);
     await old.save();
+    refreshSite("categories", "products");
     return NextResponse.json({ ok: true });
   } catch (e) {
     console.error("Update category error:", e.message);
@@ -42,5 +44,6 @@ export async function DELETE(req, { params }) {
   const n = await Product.countDocuments({ category: old.name });
   if (n) return err(`This category has ${n} product(s). Move or delete them first.`);
   await old.deleteOne();
+  refreshSite("categories");
   return NextResponse.json({ ok: true });
 }
