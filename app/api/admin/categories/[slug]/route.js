@@ -12,17 +12,16 @@ const err = (error, status = 400) => NextResponse.json({ error }, { status });
 export async function PUT(req, { params }) {
   const denied = await adminGuard(req);
   if (denied) return denied;
-  const { data, error } = parseCategory(await req.json().catch(() => null));
+  const { data, renames, error } = parseCategory(await req.json().catch(() => null));
   if (error) return err(error);
   try {
     await connectDB();
     const old = await Category.findOne({ slug: params.slug });
     if (!old) return err("Category not found", 404);
     if (await Category.findOne({ name: data.name, _id: { $ne: old._id } })) return err("A category with this name already exists");
-    const removed = old.subs.filter((s) => !data.subs.includes(s));
-    if (removed.length) {
-      const n = await Product.countDocuments({ category: old.name, subCategory: { $in: removed } });
-      if (n) return err(`You removed a sub category that ${n} product(s) still use. Change those products first.`);
+    // Renamed sub categories and a renamed category take their products with them.
+    for (const [from, to] of Object.entries(renames)) {
+      if (old.subs.includes(from)) await Product.updateMany({ category: old.name, subCategory: from }, { $set: { subCategory: to } });
     }
     if (data.name !== old.name) await Product.updateMany({ category: old.name }, { $set: { category: data.name } });
     Object.assign(old, data);
@@ -35,15 +34,15 @@ export async function PUT(req, { params }) {
   }
 }
 
+// Removing a category does not delete its products. They become hidden on the website.
 export async function DELETE(req, { params }) {
   const denied = await adminGuard(req);
   if (denied) return denied;
   await connectDB();
   const old = await Category.findOne({ slug: params.slug });
   if (!old) return err("Category not found", 404);
-  const n = await Product.countDocuments({ category: old.name });
-  if (n) return err(`This category has ${n} product(s). Move or delete them first.`);
+  const hidden = await Product.countDocuments({ category: old.name });
   await old.deleteOne();
-  refreshSite("categories");
-  return NextResponse.json({ ok: true });
+  refreshSite("categories", "products");
+  return NextResponse.json({ ok: true, hidden });
 }

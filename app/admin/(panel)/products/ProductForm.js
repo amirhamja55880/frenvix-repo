@@ -6,17 +6,27 @@ import { cdn } from "@/lib/products";
 const ALL_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
 const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60);
 
+// One uploaded image preview. Falls back to the original file if the resized version cannot load.
+function Thumb({ url }) {
+  const [lvl, setLvl] = useState(0);
+  if (lvl > 1) return <div className="thumbfail">Image cannot be loaded</div>;
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={lvl ? url : cdn(url, 200)} alt="" onError={() => setLvl(lvl + 1)} />;
+}
+
 export default function ProductForm({ categories, product }) {
   const router = useRouter();
   const editing = !!product;
   const [f, setF] = useState(() => product ? {
-    name: product.name, slug: product.slug, category: product.category, subCategory: product.subCategory || "", price: String(product.price), oldPrice: product.oldPrice ? String(product.oldPrice) : "",
+    name: product.name, slug: product.slug, category: categories.some((c) => c.name === product.category) ? product.category : "", subCategory: (categories.find((c) => c.name === product.category)?.subs || []).includes(product.subCategory) ? product.subCategory : "", price: String(product.price), oldPrice: product.oldPrice ? String(product.oldPrice) : "",
     fabric: product.fabric || "", description: product.description || "", isActive: product.isActive, images: product.images || [],
     sizes: ALL_SIZES.filter((s) => product.variants.some((v) => v.size === s)),
     colors: product.colors.map((c) => ({ name: c.name, hex: c.hex, stock: Object.fromEntries(product.variants.filter((v) => v.color === c.name).map((v) => [v.size, String(v.stock)])) })),
   } : { name: "", slug: "", category: categories[0]?.name || "", subCategory: "", price: "", oldPrice: "", fabric: "", description: "", isActive: true, images: [], sizes: ["S", "M", "L", "XL", "XXL"], colors: [{ name: "Black", hex: "#18181a", stock: {} }] });
   const [busy, setBusy] = useState(false);
   const [up, setUp] = useState(false);
+  const [imgErr, setImgErr] = useState("");
+  const [upNote, setUpNote] = useState("");
   const [msg, setMsg] = useState("");
   const [link, setLink] = useState("");
   const cat = categories.find((c) => c.name === f.category);
@@ -33,9 +43,10 @@ export default function ProductForm({ categories, product }) {
   const mainImg = (i) => setF((p) => ({ ...p, images: [p.images[i], ...p.images.filter((_, k) => k !== i)] }));
 
   const upload = async (files) => {
-    setUp(true); setMsg("");
+    setUp(true); setImgErr(""); let n = 0;
     try {
       for (const file of files) {
+        setUpNote(`Uploading ${++n} of ${files.length}…`);
         if (!file.type.startsWith("image/")) throw new Error("Only image files are allowed");
         if (file.size > 10 * 1024 * 1024) throw new Error(`${file.name} is larger than 10 MB`);
         const sr = await fetch("/api/admin/upload-sign", { method: "POST" });
@@ -48,8 +59,8 @@ export default function ProductForm({ categories, product }) {
         if (!r.ok) throw new Error(d.error?.message || "Upload failed");
         setF((p) => ({ ...p, images: [...p.images, d.secure_url] }));
       }
-    } catch (e) { setMsg(e.message); }
-    setUp(false);
+    } catch (e) { setImgErr(e.message); }
+    setUp(false); setUpNote("");
   };
 
   const save = async () => {
@@ -112,22 +123,23 @@ export default function ProductForm({ categories, product }) {
         </div>
         <div className="panel">
           <h2>Category</h2>
-          <div className="field"><label htmlFor="ct">Category</label><select id="ct" value={f.category} onChange={onCat}>{categories.map((c) => <option key={c.slug}>{c.name}</option>)}</select></div>
-          <div className="field"><label htmlFor="sc">Sub category</label><select id="sc" value={f.subCategory} onChange={set("subCategory")}><option value="">None</option>{(cat?.subs || []).map((s) => <option key={s}>{s}</option>)}</select></div>
+          <div className="field"><label htmlFor="ct">Category</label><select id="ct" value={f.category} onChange={onCat}><option value="">Choose a category</option>{categories.map((c) => <option key={c.slug}>{c.name}{c.isActive ? "" : " (hidden)"}</option>)}</select>{editing && !f.category && <p className="error">This product's category was removed, so it is hidden on the website. Choose a category to show it again.</p>}</div>
+          <div className="field"><label htmlFor="sc">Sub category</label><select id="sc" value={f.subCategory} onChange={set("subCategory")}><option value="">None</option>{(cat?.subs || []).map((s) => <option key={s} value={s}>{s}{(cat.hiddenSubs || []).includes(s) ? " (hidden)" : ""}</option>)}</select></div>
         </div>
         <div className="panel">
           <h2>Images</h2>
           <div className="thumbs">
             {f.images.map((u, i) => (
               <div className="thumb2" key={u + i}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={cdn(u, 200)} alt="" />
+                <Thumb url={u} />
                 <button type="button" className="x" onClick={() => delImg(i)} aria-label="Remove image">✕</button>
                 {i === 0 ? <span className="main">Main</span> : <button type="button" className="mk" onClick={() => mainImg(i)}>Make main</button>}
               </div>
             ))}
           </div>
-          <label className="btn outline full" style={{ cursor: "pointer", marginTop: 12 }}>{up ? "Uploading…" : "Upload images"}<input type="file" accept="image/*" multiple hidden disabled={up} onChange={(e) => { upload([...e.target.files]); e.target.value = ""; }} /></label>
+          {f.images.length > 0 && <p className="note" style={{ margin: "12px 0 0" }}>✓ {f.images.length} photo(s) added. Press &quot;{editing ? "Save changes" : "Create product"}&quot; to show them on the website.</p>}
+          <label className="btn outline full" style={{ cursor: "pointer", marginTop: 12 }}>{up ? upNote || "Uploading…" : "Upload images"}<input type="file" accept="image/*" multiple hidden disabled={up} onChange={(e) => { upload([...e.target.files]); e.target.value = ""; }} /></label>
+          {imgErr && <p className="error" role="alert">{imgErr}</p>}
           <div style={{ display: "flex", gap: 6, marginTop: 10 }}><input value={link} onChange={(e) => setLink(e.target.value)} placeholder="or paste an image link (https://…)" /><button type="button" className="chip" onClick={() => { if (link.startsWith("https://")) { setF((p) => ({ ...p, images: [...p.images, link.trim()] })); setLink(""); } }}>Add</button></div>
           <p className="muted small" style={{ marginTop: 8 }}>The first image is the main one. Up to 8 images, 10 MB each.</p>
         </div>
