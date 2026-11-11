@@ -202,3 +202,80 @@ select:disabled{background:var(--soft);color:var(--mut)}
 .mfilter summary{padding:12px 0;font-weight:600;cursor:pointer}
 .mfilter[open] .cfilter{padding-bottom:12px}
 @media(max-width:900px){.mfilter{display:block}}
+
+/* ---- Home page and information pages ---- */
+.sec2{padding-top:72px;padding-bottom:72px}
+.sechead2{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:30px}
+.sechead2 h2{font-size:clamp(26px,3.6vw,38px);font-weight:800;letter-spacing:-.025em}
+.sechead2 p{margin-top:6px}
+.hero2{position:relative;overflow:hidden;background:#0e0e10;color:#fff}
+.heromark{position:absolute;right:-5%;top:50%;height:130%;width:auto;transform:translateY(-50%);opacity:.05;pointer-events:none}
+.hero2grid{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;padding-top:80px;padding-bottom:88px}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#b4b4b0;margin-bottom:20px}
+.eyebrow::before{content:"";width:30px;height:1px;background:#b4b4b0}
+.hero2 h1{font-size:clamp(44px,7vw,92px);font-weight:800;line-height:.98;letter-spacing:-.035em}
+.hero2 .lead{font-size:18px;color:#c9c9c5;max-width:46ch;margin:24px 0 32px}
+.heroties{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:36px;font-size:14px;color:#a8a8a4}
+.heroties span::before{content:"✓";margin-right:8px;color:#fff}
+.herostack{position:relative;width:100%;max-width:460px;margin-left:auto}
+.herocard2{display:block;position:relative;border-radius:10px;overflow:hidden;box-shadow:0 30px 60px -24px rgba(0,0,0,.7)}
+.herocard2 .media{border-radius:0}
+.herotag{position:absolute;left:14px;bottom:14px;display:flex;flex-direction:column;background:#fff;color:var(--ink);padding:10px 14px;border-radius:8px;font-size:14px}
+.herotag i{font-style:normal;color:var(--mut)}
+.heroimg2{position:absolute;right:-22px;top:-22px;width:34%;border:5px solid #0e0e10;border-radius:12px;overflow:hidden}
+.heroimg2 .media{border-radius:0}
+.trustbar{background:#fff;border-bottom:1px solid var(--line)}
+.trustgrid{display:grid;grid-template-columns:repeat(4,1fr)}
+.ti{display:flex;gap:14px;align-items:flex-start;padding:24px 20px;border-right:1px solid var(--line)}
+.ti:first-child{padding-left:0}.ti:last-child{border-right:0}
+.ti svg{flex:none;width:28px;height:28px}
+.ti b{display:block;font-size:15px}.ti span{font-size:13px;color:var(--mut)}
+.cattiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.cattile{position:relative;display:block;border-radius:10px;overflow:hidden}
+.cattile .media{border-radius:0;transition:transform .4s}
+.cattile:hover .media{transform:scale(1.03)}
+.cattile .cap{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:flex-end;gap:10px;padding:34px 18px 16px;background:linear-gradient(transparent,rgba(0,0,0,.62));color:#fff}
+.cattile .cap b{font-size:22px;letter-spacing:-.02em}.cattile .cap i{font-style:normal;font-size:14px}
+.why{background:var(--soft)}
+.whygrid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.whycard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:26px}
+.whycard .n{font-size:13px;letter-spacing:.12em;color:var(--mut)}
+.whycard h3{font-size:19px;margin:12px 0 8px}.whycard p{color:#4a4a47;font-size:15px}
+.howgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.step{border-top:2px solid var(--ink);padding-top:18px}
+.step .num{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.step h3{font-size:20px;margin:10px 0 8px}.step p{color:#4a4a47}
+.faq{max-width:800px}
+.faq details{border-bottom:1px solid var(--line);padding:18px 0}
+.faq summary{display:flex;justify-content:space-between;gap:14px;cursor:pointer;list-style:none;font-weight:600;font-size:17px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:22px;line-height:1;color:var(--mut)}
+.faq details[open] summary::after{content:"–"}
+.faq p{margin-top:10px;color:#4a4a47;max-width:64ch}
+.ctaband{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;background:#0e0e10;color:#fff;border-radius:14px;padding:44px 36px}
+.ctaband h2{font-size:clamp(24px,3vw,32px);font-weight:800;letter-spacing:-.02em}
+.ctaband p{color:#c9c9c5;margin-top:8px;max-width:46ch}
+.pagehero{background:var(--soft);border-bottom:1px solid var(--line);padding:60px 0 52px}
+.pagehero h1{font-size:clamp(34px,5vw,56px);font-weight:800;letter-spacing:-.03em}
+.pagehero p{max-width:60ch;color:#4a4a47;margin-top:14px;font-size:18px}
+.prose{max-width:760px}
+.prose h2{font-size:22px;margin:38px 0 10px;letter-spacing:-.015em}
+.prose p,.prose li{color:#3d3d3b;margin-bottom:10px}
+.prose ul,.prose ol{padding-left:22px}
+.prose .link{text-decoration:underline;text-underline-offset:3px;color:var(--ink)}
+.cardgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.ccard{border:1px solid var(--line);border-radius:12px;padding:24px;background:#fff}
+.ccard h3{font-size:15px;color:var(--mut);font-weight:600;margin-bottom:8px}
+.ccard .big{font-size:20px;font-weight:700;word-break:break-word}
+.pbox{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+.pbox div{flex:1 1 200px;background:var(--soft);border-radius:12px;padding:18px 20px;color:#4a4a47;font-size:15px}
+.pbox b{display:block;font-size:24px;color:var(--ink);letter-spacing:-.02em;margin-bottom:2px}
+.flink{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:900px){
+  .hero2grid{grid-template-columns:1fr;gap:44px;padding-top:52px;padding-bottom:56px}
+  .herostack{margin:0 auto;max-width:400px}.heroimg2{right:-8px}
+  .trustgrid{grid-template-columns:1fr 1fr}.ti{border-right:0;border-bottom:1px solid var(--line);padding:18px 8px}.ti:first-child{padding-left:8px}
+  .whygrid{grid-template-columns:1fr 1fr}.howgrid{grid-template-columns:1fr}
+  .sec2{padding-top:52px;padding-bottom:52px}
+}
+@media(max-width:560px){.whygrid,.trustgrid{grid-template-columns:1fr}.ctaband{padding:32px 22px}}
