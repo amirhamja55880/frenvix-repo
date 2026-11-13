@@ -10,8 +10,9 @@ export async function POST(req) {
   if (denied) return denied;
   const { CLOUDINARY_CLOUD_NAME: cloudName, CLOUDINARY_API_KEY: apiKey, CLOUDINARY_API_SECRET: secret } = process.env;
   if (!cloudName || !apiKey || !secret) return NextResponse.json({ error: "Cloudinary is not set up. Add the 3 CLOUDINARY_ values to .env.local and restart." }, { status: 500 });
+  const body = await req.json().catch(() => null);
   const timestamp = Math.floor(Date.now() / 1000);
-  const folder = "frenvix/products";
+  const folder = body?.type === "banners" ? "frenvix/banners" : "frenvix/products";
   const signature = crypto.createHash("sha1").update(`folder=${folder}&timestamp=${timestamp}${secret}`).digest("hex");
   return NextResponse.json({ cloudName, apiKey, timestamp, folder, signature });
 }

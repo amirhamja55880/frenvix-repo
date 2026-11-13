@@ -15,6 +15,7 @@ export async function PUT(req) {
   const b = await req.json().catch(() => null);
   const phone = text(b?.phone, 20), whatsapp = text(b?.whatsapp, 20), email = text(b?.email, 120);
   const address = text(b?.address, 200), hours = text(b?.hours, 100), facebook = text(b?.facebook, 200), instagram = text(b?.instagram, 200);
+  const announcements = (Array.isArray(b?.announcements) ? b.announcements : []).map((t) => text(t, 120)).filter(Boolean).slice(0, 10);
   const inside = Number(b?.deliveryInsideKhulna), outside = Number(b?.deliveryOutsideKhulna);
   if (!/^[0-9+\-\s]{5,20}$/.test(phone)) return err("Enter a valid phone number");
   if (whatsapp && !/^[0-9+\-\s]{5,20}$/.test(whatsapp)) return err("Enter a valid WhatsApp number or leave it empty");
@@ -23,7 +24,7 @@ export async function PUT(req) {
   if (!Object.values(DIVISIONS).flat().includes(b?.homeDistrict)) return err("Choose a valid district");
   if (![inside, outside].every((n) => Number.isInteger(n) && n >= 0 && n <= 5000)) return err("Delivery charges must be whole numbers between 0 and 5000");
   await connectDB();
-  await Settings.updateOne({ key: "main" }, { $set: { phone, whatsapp, email, address, hours, facebook, instagram, homeDistrict: b.homeDistrict, deliveryInsideKhulna: inside, deliveryOutsideKhulna: outside } }, { upsert: true });
+  await Settings.updateOne({ key: "main" }, { $set: { phone, whatsapp, email, address, hours, facebook, instagram, announcements, homeDistrict: b.homeDistrict, deliveryInsideKhulna: inside, deliveryOutsideKhulna: outside } }, { upsert: true });
   refreshSite("settings");
   return NextResponse.json({ ok: true });
 }

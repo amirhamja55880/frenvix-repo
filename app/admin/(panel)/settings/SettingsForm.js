@@ -7,9 +7,10 @@ const DISTRICTS = Object.values(DIVISIONS).flat().sort();
 
 export default function SettingsForm({ initial }) {
   const router = useRouter();
-  const [f, setF] = useState({ ...initial, deliveryInsideKhulna: String(initial.deliveryInsideKhulna), deliveryOutsideKhulna: String(initial.deliveryOutsideKhulna) });
+  const [f, setF] = useState({ ...initial, announcements: initial.announcements || [], deliveryInsideKhulna: String(initial.deliveryInsideKhulna), deliveryOutsideKhulna: String(initial.deliveryOutsideKhulna) });
   const [msg, setMsg] = useState(""); const [busy, setBusy] = useState(false); const [bad, setBad] = useState(false);
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+  const setMsgRow = (i, v) => setF({ ...f, announcements: f.announcements.map((t, k) => (k === i ? v : t)) });
   const save = async () => {
     setBusy(true); setMsg(""); setBad(false);
     try {
@@ -22,6 +23,17 @@ export default function SettingsForm({ initial }) {
   };
   return (
     <div style={{ maxWidth: 680 }}>
+      <div className="panel">
+        <h2>Moving bar at the top of the website</h2>
+        <p className="muted small" style={{ marginTop: -6 }}>These messages scroll across the top of every page, like a news ticker. Remove all of them to hide the bar.</p>
+        {f.announcements.map((t, i) => (
+          <div key={i} style={{ display: "flex", gap: 10, marginBottom: 8 }}>
+            <input value={t} maxLength={120} onChange={(e) => setMsgRow(i, e.target.value)} aria-label={`Message ${i + 1}`} />
+            <button type="button" className="link" onClick={() => setF({ ...f, announcements: f.announcements.filter((_, k) => k !== i) })}>Remove</button>
+          </div>
+        ))}
+        {f.announcements.length < 10 && <button type="button" className="chip" onClick={() => setF({ ...f, announcements: [...f.announcements, ""] })}>+ Add message</button>}
+      </div>
       <div className="panel">
         <h2>Contact details</h2>
         <p className="muted small" style={{ marginTop: -6 }}>These show on the Contact page, the footer and the home page. Leave a field empty to hide it.</p>

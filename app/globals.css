@@ -279,3 +279,31 @@ select:disabled{background:var(--soft);color:var(--mut)}
   .sec2{padding-top:52px;padding-bottom:52px}
 }
 @media(max-width:560px){.whygrid,.trustgrid{grid-template-columns:1fr}.ctaband{padding:32px 22px}}
+
+/* ---- Moving top bar (ticker) ---- */
+.topbar.ticker{padding:0;overflow:hidden;white-space:nowrap;text-align:left}
+.tk-track{display:flex;width:max-content;animation:tk 40s linear infinite}
+.tk-row{display:flex;flex:none}
+.tk-row span{padding:9px 36px;font-size:13px}
+.tk-row span::after{content:"•";margin-left:72px;opacity:.45}
+.topbar.ticker:hover .tk-track{animation-play-state:paused}
+@keyframes tk{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.tk-track{animation:none}}
+
+/* ---- Home banner (picture only) ---- */
+.bn{position:relative;overflow:hidden;background:#0e0e10;aspect-ratio:16/6;max-height:82vh}
+.bn-track{display:flex;height:100%;transition:transform .6s ease}
+.bn-slide{flex:0 0 100%;height:100%}
+.bn-slide picture,.bn-slide a{display:block;height:100%}
+.bn-slide img{display:block;width:100%;height:100%;object-fit:cover}
+.bn-empty{display:grid;place-items:center;height:100%;background:radial-gradient(circle at 50% 40%,#1b1b1e,#0e0e10)}
+.bn-empty img{height:38%;width:auto;opacity:.14}
+.bn-arrow{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.92);color:#111;font-size:26px;line-height:1;display:grid;place-items:center;opacity:0;transition:opacity .2s}
+.bn:hover .bn-arrow,.bn-arrow:focus-visible{opacity:1}
+.bn-prev{left:18px}.bn-next{right:18px}
+.bn-dots{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:8px}
+.bn-dots button{width:9px;height:9px;border-radius:99px;background:rgba(255,255,255,.55);transition:width .25s,background .25s}
+.bn-dots button.on{width:26px;background:#fff}
+@media(max-width:700px){.bn{aspect-ratio:var(--m-ratio,16/9)}.bn-arrow{display:none}}
+@media(max-width:700px){.bnrow{grid-template-columns:1fr!important}}
+@media(prefers-reduced-motion:reduce){.bn-track{transition:none}}

@@ -10,6 +10,7 @@ const SettingsSchema = new mongoose.Schema(
     hours: String,
     facebook: String,
     instagram: String,
+    announcements: [String], // messages in the moving bar at the top
     homeDistrict: { type: String, default: "Khulna" },
     deliveryInsideKhulna: { type: Number, default: 60 },
     deliveryOutsideKhulna: { type: Number, default: 120 },

@@ -22,7 +22,7 @@ export default async function RootLayout({ children }) {
       <body>
         <SiteProvider settings={settings}>
           <CartProvider>
-            <HideOnAdmin><Header menu={menu} /></HideOnAdmin>
+            <HideOnAdmin><Header menu={menu} announcements={settings.announcements} /></HideOnAdmin>
             <main>{children}</main>
             <HideOnAdmin><Footer settings={settings} menu={menu} /></HideOnAdmin>
           </CartProvider>

@@ -5,11 +5,12 @@ import { usePathname } from "next/navigation";
 import { useCart } from "./CartProvider";
 import CategoryTree from "./CategoryTree";
 import Logo from "./Logo";
+import Ticker from "./Ticker";
 import { SITE } from "@/lib/products";
 
 const links = [["/shop", "Shop"], ["/track", "Track order"], ["/about", "About"], ["/contact", "Contact"]];
 
-export default function Header({ menu }) {
+export default function Header({ menu, announcements }) {
   const { categories, products } = menu;
   const { count } = useCart();
   const path = usePathname();
@@ -24,7 +25,7 @@ export default function Header({ menu }) {
 
   return (
     <>
-      <div className="topbar">Cash on delivery across Bangladesh</div>
+      <Ticker items={announcements} />
       <header className="header">
         <div className="wrap nav">
           <Link href="/" className="logo" aria-label={SITE.name}><Logo text={SITE.name} /></Link>

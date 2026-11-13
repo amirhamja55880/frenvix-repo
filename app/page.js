@@ -1,7 +1,8 @@
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import ProductImage from "@/components/ProductImage";
-import { getProducts, getCategories, getSettings } from "@/lib/data";
+import { getProducts, getCategories, getSettings, getBanners } from "@/lib/data";
+import BannerSlider from "@/components/BannerSlider";
 import { taka } from "@/lib/products";
 import { phoneOk, telLink, waLink } from "@/lib/contact";
 
@@ -10,8 +11,7 @@ export const revalidate = 60;
 const Icon = ({ children }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
 
 export default async function Home() {
-  const [products, categories, s] = await Promise.all([getProducts(), getCategories(), getSettings()]);
-  const [hero, second] = products;
+  const [products, categories, s, banners] = await Promise.all([getProducts(), getCategories(), getSettings(), getBanners()]);
   const wa = s.whatsapp ? waLink(s.whatsapp) : "";
 
   const trust = [
@@ -41,30 +41,7 @@ export default async function Home() {
 
   return (
     <>
-      <section className="hero2">
-        <img className="heromark" src="/logo-light.png" alt="" aria-hidden="true" />
-        <div className="wrap hero2grid">
-          <div>
-            <span className="eyebrow">Heavyweight everyday basics</span>
-            <h1>Built heavy.<br />Worn every day.</h1>
-            <p className="lead">Hoodies, sweatshirts and henleys cut from thick, soft cotton. Order without an account and pay when it arrives.</p>
-            <div className="actions">
-              <Link className="btn light" href="/shop">Shop the collection</Link>
-              <a className="btn ghost" href="#how">How ordering works</a>
-            </div>
-            <div className="heroties"><span>Cash on delivery</span><span>3-day size exchange</span><span>Order tracking</span></div>
-          </div>
-          {hero && (
-            <div className="herostack">
-              <Link href={`/product/${hero.slug}`} className="herocard2">
-                <ProductImage product={hero} ratio="4/5" width={800} priority />
-                <span className="herotag"><b>{hero.name}</b><i>{taka(hero.price)}</i></span>
-              </Link>
-              {second && <Link href={`/product/${second.slug}`} className="heroimg2" aria-label={second.name}><ProductImage product={second} ratio="1/1" width={400} priority /></Link>}
-            </div>
-          )}
-        </div>
-      </section>
+      <BannerSlider banners={banners} />
 
       <section className="trustbar">
         <div className="wrap trustgrid">
