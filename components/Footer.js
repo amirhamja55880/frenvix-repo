@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Logo from "./Logo";
+import { SocialLinks } from "./SocialIcons";
 import { SITE } from "@/lib/products";
 import { phoneOk, telLink, waLink } from "@/lib/contact";
 
@@ -10,12 +11,7 @@ export default function Footer({ settings: s, menu }) {
         <div>
           <div className="logo"><Logo height={26} text={SITE.name} /></div>
           <p className="muted" style={{ marginTop: 12, maxWidth: 280 }}>Heavyweight everyday basics: hoodies, sweatshirts and henleys.</p>
-          {(s.facebook || s.instagram) && (
-            <p style={{ marginTop: 12, display: "flex", gap: 16 }}>
-              {s.facebook && <a className="flink" href={s.facebook} target="_blank" rel="noopener noreferrer">Facebook</a>}
-              {s.instagram && <a className="flink" href={s.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>}
-            </p>
-          )}
+          <div style={{ marginTop: 16 }}><SocialLinks s={s} /></div>
         </div>
         <div>
           <h4>Shop</h4>

@@ -307,3 +307,51 @@ select:disabled{background:var(--soft);color:var(--mut)}
 @media(max-width:700px){.bn{aspect-ratio:var(--m-ratio,16/9)}.bn-arrow{display:none}}
 @media(max-width:700px){.bnrow{grid-template-columns:1fr!important}}
 @media(prefers-reduced-motion:reduce){.bn-track{transition:none}}
+
+/* ---- Contact page, form and social icons ---- */
+.contactgrid{display:grid;grid-template-columns:1fr 1.1fr;gap:48px;align-items:start}
+.ch{font-size:24px;letter-spacing:-.02em;margin:0 0 16px}
+.ch2{font-size:16px;margin:28px 0 12px}
+.clist{list-style:none;padding:0;display:flex;flex-direction:column;gap:12px}
+.citem{display:flex;gap:16px;align-items:flex-start;padding:18px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.cico{flex:none;width:44px;height:44px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center}
+.cico svg{width:20px;height:20px}
+.ct{display:block;font-size:13px;color:var(--mut);margin-bottom:2px}
+.cv{font-size:18px;font-weight:700;word-break:break-word}
+.cv a:hover{text-decoration:underline}
+.citem p{margin-top:4px}
+.cform{background:#fff;border:1px solid var(--line);border-radius:16px;padding:32px;box-shadow:0 24px 44px -32px rgba(0,0,0,.3)}
+.cdone{text-align:center;padding:36px 12px}
+.cdone svg{color:#15803d;margin-bottom:10px}
+.cdone h3{font-size:22px;margin-bottom:8px}.cdone p{margin-bottom:20px}
+.soc{display:flex;gap:10px;flex-wrap:wrap}
+.soc a{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);color:var(--ink);background:#fff;transition:background .2s,color .2s,border-color .2s,transform .2s}
+.soc a:hover{background:var(--ink);color:#fff;border-color:var(--ink);transform:translateY(-2px)}
+.soc.color a{border:0;color:#fff}
+.soc.color .fb{background:#1877f2}
+.soc.color .ig{background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af)}
+.soc.color .wa{background:#25d366}
+.soc.color a:hover{filter:brightness(.92)}
+.nbadge{margin-left:8px;background:#fff;color:#111;border-radius:99px;font-size:12px;font-weight:700;padding:1px 8px}
+.msg summary{display:flex;align-items:center;gap:10px;flex-wrap:wrap;cursor:pointer;list-style:none}
+.msg summary::-webkit-details-marker{display:none}
+.msgbody{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+@media(max-width:900px){.contactgrid{grid-template-columns:1fr;gap:32px}.cform{padding:22px}}
+
+/* ---- Phone fixes: nothing may be wider than the screen ---- */
+body{overflow-x:clip}
+.fgrid>div{min-width:0}
+.footer a,.footer p{overflow-wrap:anywhere}
+.line .grow{min-width:0;overflow-wrap:anywhere}
+@media(max-width:640px){.fgrid{gap:28px 20px}}
+@media(max-width:480px){
+  .fgrid{grid-template-columns:1fr}
+  .nav{gap:10px}
+  .header .logo{font-size:19px}
+  .header .logo img{height:24px!important}
+  .cattiles{grid-template-columns:1fr 1fr;gap:10px}
+  .cattile .cap{flex-direction:column;align-items:flex-start;gap:2px;padding:26px 10px 10px}
+  .cattile .cap b{font-size:16px}.cattile .cap i{font-size:12px}
+  .line .thumb{width:72px}
+  .sechead2 h2{font-size:24px}
+}
