@@ -3,7 +3,20 @@ import ProductCard from "@/components/ProductCard";
 import CategoryTree from "@/components/CategoryTree";
 import { getProducts, getCategories } from "@/lib/data";
 
-export const metadata = { title: "Shop", description: "Shop heavyweight hoodies, sweatshirts and henleys. Cash on delivery across Bangladesh.", alternates: { canonical: "/shop" } };
+export async function generateMetadata({ searchParams }) {
+  const categories = await getCategories();
+  const cat = categories.find((c) => c.name === searchParams?.cat);
+  const sub = cat && cat.subs.includes(searchParams?.sub) ? searchParams.sub : null;
+  const q = new URLSearchParams();
+  if (cat) q.set("cat", cat.name);
+  if (sub) q.set("sub", sub);
+  const name = sub || cat?.name;
+  return {
+    title: name ? `${name} in Bangladesh` : "Shop",
+    description: name ? `Buy ${name} online in Bangladesh from FRENVIX. Cash on delivery, 3-day size exchange and delivery across all districts.` : "Shop heavyweight hoodies, sweatshirts and henleys. Cash on delivery across Bangladesh.",
+    alternates: { canonical: "/shop" + (q.toString() ? `?${q}` : "") },
+  };
+}
 
 const href = ({ cat, sub, sort }) => {
   const p = new URLSearchParams();

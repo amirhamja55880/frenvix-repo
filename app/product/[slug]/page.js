@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import ProductClient from "@/components/ProductClient";
 import ProductCard from "@/components/ProductCard";
 import { getProduct, getProducts } from "@/lib/data";
-import { productJsonLd } from "@/lib/seo";
+import { productJsonLd, breadcrumbJsonLd } from "@/lib/seo";
 
 export const revalidate = 60;
 export async function generateStaticParams() { return (await getProducts()).map((p) => ({ slug: p.slug })); }
@@ -28,6 +28,7 @@ export default async function ProductPage({ params }) {
   return (
     <div className="wrap section">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd(p)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd(p)) }} />
       <ProductClient p={p} />
       {related.length > 0 && (
         <>

@@ -15,7 +15,7 @@ const pages = {
 export const revalidate = 3600;
 export const dynamicParams = false;
 export const generateStaticParams = () => Object.keys(pages).map((slug) => ({ slug }));
-export const generateMetadata = ({ params }) => ({ title: pages[params.slug]?.title, description: pages[params.slug]?.description });
+export const generateMetadata = ({ params }) => ({ title: pages[params.slug]?.title, description: pages[params.slug]?.description, alternates: { canonical: `/${params.slug}` } });
 
 const Head = ({ title, lead }) => <section className="pagehero"><div className="wrap"><h1>{title}</h1><p>{lead}</p></div></section>;
 

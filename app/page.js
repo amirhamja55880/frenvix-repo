@@ -7,6 +7,7 @@ import { taka } from "@/lib/products";
 import { phoneOk, telLink, waLink } from "@/lib/contact";
 
 export const revalidate = 60;
+export const metadata = { alternates: { canonical: "/" } };
 
 const Icon = ({ children }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
 
@@ -41,6 +42,8 @@ export default async function Home() {
 
   return (
     <>
+      <h1 className="vh">FRENVIX: premium hoodies, sweatshirts and henleys in Bangladesh</h1>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) }) }} />
       <BannerSlider banners={banners} />
 
       <section className="trustbar">
