@@ -5,6 +5,7 @@ import ProductImage from "./ProductImage";
 import { useCart } from "./CartProvider";
 import { SIZES, taka, cdn } from "@/lib/products";
 import { track } from "@/lib/track";
+import { useSite } from "./SiteProvider";
 
 export default function ProductClient({ p }) {
   const { add } = useCart();
@@ -15,6 +16,7 @@ export default function ProductClient({ p }) {
   const [added, setAdded] = useState(false);
   const [img, setImg] = useState(0);
 
+  const site = useSite();
   useEffect(() => { track.viewItem(p); }, [p.slug]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const stockOf = (c, s) => p.variants.find((v) => v.color === c && v.size === s)?.stock ?? 0;
@@ -57,7 +59,7 @@ export default function ProductClient({ p }) {
         <dl className="specs">
           <div><dt>Fabric</dt><dd>{p.fabric}</dd></div>
           <div><dt>Size chart (chest)</dt><dd>S 38 · M 40 · L 42 · XL 44 · XXL 46 inches</dd></div>
-          <div><dt>Delivery</dt><dd>2–4 days. Cash on delivery or pay online.</dd></div>
+          <div><dt>Delivery</dt><dd>2–4 days. Cash on delivery{site.onlinePayment ? " or pay online" : ""}.</dd></div>
         </dl>
       </div>
     </div>

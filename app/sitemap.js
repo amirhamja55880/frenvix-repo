@@ -16,8 +16,10 @@ export default async function sitemap() {
   let cats = [];
   try {
     for (const c of await getCategories()) {
-      cats.push({ url: `${base}/shop?cat=${encodeURIComponent(c.name)}`, lastModified: now, priority: 0.8 });
-      for (const s of c.subs) cats.push({ url: `${base}/shop?cat=${encodeURIComponent(c.name)}&sub=${encodeURIComponent(s)}`, lastModified: now, priority: 0.6 });
+      if ((await getProducts({ cat: c.name })).length) cats.push({ url: `${base}/shop?cat=${encodeURIComponent(c.name)}`, lastModified: now, priority: 0.8 });
+      for (const s of c.subs) {
+        if ((await getProducts({ cat: c.name, sub: s })).length) cats.push({ url: `${base}/shop?cat=${encodeURIComponent(c.name)}&sub=${encodeURIComponent(s)}`, lastModified: now, priority: 0.6 });
+      }
     }
   } catch (e) { console.error("Sitemap categories error:", e.message); }
   return [...fixed, ...cats, ...products];

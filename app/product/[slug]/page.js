@@ -13,7 +13,7 @@ export async function generateMetadata({ params }) {
   const desc = (p.description || `${p.name} by FRENVIX. Cash on delivery across Bangladesh.`).slice(0, 160);
   const img = p.images?.[0];
   return {
-    title: p.name, description: desc,
+    title: /frenvix/i.test(p.name) ? { absolute: `${p.name} | Buy Online in Bangladesh` } : `${p.name} | Buy Online in Bangladesh`, description: desc,
     alternates: { canonical: `/product/${p.slug}` },
     openGraph: { type: "website", title: p.name, description: desc, url: `/product/${p.slug}`, images: img ? [{ url: img }] : undefined },
     twitter: { card: "summary_large_image", title: p.name, description: desc, images: img ? [img] : undefined },

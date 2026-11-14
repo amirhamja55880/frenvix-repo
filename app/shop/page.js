@@ -11,7 +11,9 @@ export async function generateMetadata({ searchParams }) {
   if (cat) q.set("cat", cat.name);
   if (sub) q.set("sub", sub);
   const name = sub || cat?.name;
+  const empty = cat ? (await getProducts({ cat: cat.name, sub: sub || undefined })).length === 0 : false;
   return {
+    robots: empty ? { index: false, follow: true } : undefined,
     title: name ? `${name} in Bangladesh` : "Shop",
     description: name ? `Buy ${name} online in Bangladesh from FRENVIX. Cash on delivery, 3-day size exchange and delivery across all districts.` : "Shop heavyweight hoodies, sweatshirts and henleys. Cash on delivery across Bangladesh.",
     alternates: { canonical: "/shop" + (q.toString() ? `?${q}` : "") },
