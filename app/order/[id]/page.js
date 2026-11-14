@@ -30,7 +30,7 @@ export default function OrderDone({ params }) {
       clear();
       try { sessionStorage.removeItem("frx_checkout"); } catch {}
     }
-    if ((o.paymentMethod || "COD") === "COD" || paid) track.purchase(o);
+    if (o.paymentMethod !== "Online" || paid) track.purchase(o);
   }, [o]); // eslint-disable-line react-hooks/exhaustive-deps
   if (o === undefined) return <div className="wrap section" />;
   if (!o)
@@ -44,10 +44,11 @@ export default function OrderDone({ params }) {
     );
   const cod = (o.paymentMethod || "COD") === "COD";
   const online = o.paymentMethod === "Online";
+  const manual = !cod && !online;
   const paid = online && (paidNow || o.paymentStatus === "Paid");
   return (
     <div className="wrap section narrow">
-      <span className="pill">{paid ? "Paid" : online ? "Awaiting payment" : "Pending"}</span>
+      <span className="pill">{paid ? "Paid" : online ? "Awaiting payment" : manual ? (o.paymentStatus === "Paid" ? "Payment verified" : "Verifying payment") : "Pending"}</span>
       <h1 className="pagetitle">Thank you, {o.name.split(" ")[0]}</h1>
       <div className="idbox">
         <span className="muted small">Your order ID</span>
@@ -62,7 +63,9 @@ export default function OrderDone({ params }) {
           ? `Payment received. Our team will confirm your order shortly. A confirmation was sent to ${o.email}.`
           : online
             ? "We have not received your payment yet. If you already paid, please wait a few minutes and check your email."
-            : `Your order is pending. One of our representatives will contact you shortly. A confirmation was sent to ${o.email}.`}
+            : manual
+              ? `We received your ${o.paymentMethod} payment details (TrxID ${o.trxId}). We will verify the payment and confirm your order shortly. A confirmation was sent to ${o.email}.`
+              : `Your order is pending. One of our representatives will contact you shortly. A confirmation was sent to ${o.email}.`}
       </p>
       <div className="summary">
         {o.items.map((i, k) => (
@@ -81,7 +84,7 @@ export default function OrderDone({ params }) {
         <div className="l">
           <span>Payment</span>
           <span>
-            {cod ? "Cash on delivery" : online ? (paid ? "Paid online" : "Online payment (awaiting)") : `${o.paymentMethod} (to be confirmed)`}
+            {cod ? "Cash on delivery" : online ? (paid ? "Paid online" : "Online payment (awaiting)") : `${o.paymentMethod} · TrxID ${o.trxId || "-"} (${o.paymentStatus === "Paid" ? "verified" : "being verified"})`}
           </span>
         </div>
         <div className="l total">

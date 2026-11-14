@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
 import { PAYMENT_METHODS, taka } from "@/lib/products";
 import { useSite } from "@/components/SiteProvider";
+import CopyButton from "@/components/CopyButton";
 
 export default function Payment() {
   const { items, subtotal, clear, ready } = useCart();
@@ -16,6 +17,8 @@ export default function Payment() {
   const [fail, setFail] = useState("");
   const placed = useRef(false);
   const [notice, setNotice] = useState("");
+  const [payNumber, setPayNumber] = useState("");
+  const [trxId, setTrxId] = useState("");
 
   useEffect(() => {
     try {
@@ -48,17 +51,22 @@ export default function Payment() {
 
   const inside = info.district === site.homeDistrict;
   const fee = inside ? site.deliveryInsideKhulna : site.deliveryOutsideKhulna;
-  const methods = PAYMENT_METHODS.filter((m) => !m.online || site.onlinePayment);
+  const numberOf = (m) => (m?.manual ? site[m.id.toLowerCase() + "Number"] : "");
+  const methods = PAYMENT_METHODS.filter((m) => (m.online ? site.onlinePayment : m.manual ? Boolean(numberOf(m)) : true));
   const chosen = methods.find((m) => m.id === method);
 
   const place = async () => {
+    if (chosen?.manual) {
+      if (!/^01[3-9]\d{8}\d?$/.test(payNumber.trim())) return setFail(`Enter the ${chosen.id} number you sent the money from.`);
+      if (!/^[A-Za-z0-9]{6,20}$/.test(trxId.trim())) return setFail("Enter the Transaction ID (TrxID) from your payment message.");
+    }
     setBusy(true);
     setFail("");
     try {
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...info, paymentMethod: method, items }),
+        body: JSON.stringify({ ...info, paymentMethod: method, payNumber: payNumber.trim(), trxId: trxId.trim(), items }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Order failed");
@@ -132,6 +140,26 @@ export default function Payment() {
               Nagad, Rocket, a card or net banking. Your order is confirmed
               after the payment succeeds.
             </p>
+          )}
+          {chosen?.manual && (
+            <div className="note">
+              <b>How to pay with {chosen.id}</b>
+              <ol style={{ margin: "8px 0 12px 18px", padding: 0 }}>
+                <li>Open your {chosen.id} app and choose <b>Send Money</b>.</li>
+                <li>
+                  Send exactly <b>{taka(subtotal + fee)}</b> to <b>{numberOf(chosen)}</b> <CopyButton text={numberOf(chosen)} label="Copy number" />
+                </li>
+                <li>Type the number you sent from and the Transaction ID below. We verify it before we confirm your order.</li>
+              </ol>
+              <div className="field">
+                <label htmlFor="pn">Your {chosen.id} number (sent from)</label>
+                <input id="pn" value={payNumber} onChange={(e) => setPayNumber(e.target.value)} inputMode="numeric" maxLength={12} placeholder="01XXXXXXXXX" />
+              </div>
+              <div className="field" style={{ marginBottom: 0 }}>
+                <label htmlFor="tx">Transaction ID (TrxID)</label>
+                <input id="tx" value={trxId} onChange={(e) => setTrxId(e.target.value)} maxLength={20} autoCapitalize="characters" placeholder="e.g. 8N7A6D5EE3" />
+              </div>
+            </div>
           )}
           {notice && (
             <p className="error" role="alert">

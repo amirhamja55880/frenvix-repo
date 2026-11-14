@@ -50,6 +50,15 @@ export default function SettingsForm({ initial }) {
         </div>
       </div>
       <div className="panel">
+        <h2>Payment numbers</h2>
+        <p className="muted small" style={{ marginTop: -6 }}>Customers send money to these numbers, then enter the Transaction ID at checkout. Leave a field empty to hide that payment method. (Rocket numbers often have one extra last digit.)</p>
+        <div className="row2">
+          <div className="field"><label htmlFor="bk">bKash number</label><input id="bk" value={f.bkashNumber || ""} onChange={set("bkashNumber")} inputMode="numeric" placeholder="01XXXXXXXXX" /></div>
+          <div className="field"><label htmlFor="ng">Nagad number</label><input id="ng" value={f.nagadNumber || ""} onChange={set("nagadNumber")} inputMode="numeric" placeholder="01XXXXXXXXX" /></div>
+        </div>
+        <div className="field"><label htmlFor="rk">Rocket number</label><input id="rk" value={f.rocketNumber || ""} onChange={set("rocketNumber")} inputMode="numeric" placeholder="01XXXXXXXXX" /></div>
+      </div>
+      <div className="panel">
         <h2>Tracking &amp; SEO</h2>
         <p className="muted small" style={{ marginTop: -6 }}>Paste the IDs from Google and Meta. Leave a field empty to switch that tool off.</p>
         <div className="row2">

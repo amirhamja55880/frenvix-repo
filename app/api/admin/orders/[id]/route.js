@@ -32,7 +32,7 @@ export async function PATCH(req, { params }) {
       }
     }
     if (b.paymentStatus !== undefined) {
-      if (!["Unpaid", "Paid"].includes(b.paymentStatus)) return err("Invalid payment status");
+      if (!["Unpaid", "Verifying", "Paid"].includes(b.paymentStatus)) return err("Invalid payment status");
       o.paymentStatus = b.paymentStatus;
     }
     await o.save();

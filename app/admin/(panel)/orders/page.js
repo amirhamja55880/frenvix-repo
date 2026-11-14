@@ -46,7 +46,7 @@ export default async function Orders({ searchParams }) {
               <td>{o.name}<br /><span className="muted small">{o.phone}</span></td>
               <td>{o.district}</td>
               <td>{taka(o.total)}</td>
-              <td>{o.paymentMethod}<br /><span className="muted small">{o.paymentStatus}</span></td>
+              <td>{o.paymentMethod}<br /><span className="muted small">{o.paymentStatus}{o.trxId ? ` · ${o.trxId}` : ""}</span></td>
               <td><span className={`pill2 st-${o.status}`}>{o.status}</span></td>
             </tr>
           ))}

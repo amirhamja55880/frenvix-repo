@@ -20,6 +20,9 @@ export async function PUT(req) {
   if (gaId && !/^G-[A-Z0-9]{6,12}$/.test(gaId)) return err("Google Analytics ID looks like G-XXXXXXXXXX");
   if (pixelId && !/^\d{10,20}$/.test(pixelId)) return err("Meta Pixel ID must be 10 to 20 digits only");
   if (gscVerification && !/^[\w-]{20,100}$/.test(gscVerification)) return err("Search Console code looks wrong. Paste only the code after content=");
+  const num = (v) => text(v, 12).replace(/\s/g, "");
+  const bkashNumber = num(b?.bkashNumber), nagadNumber = num(b?.nagadNumber), rocketNumber = num(b?.rocketNumber);
+  for (const [n, v] of [["bKash", bkashNumber], ["Nagad", nagadNumber], ["Rocket", rocketNumber]]) if (v && !/^01[3-9]\d{8}\d?$/.test(v)) return err(`${n} number must be a Bangladeshi mobile number like 01XXXXXXXXX`);
   const inside = Number(b?.deliveryInsideKhulna), outside = Number(b?.deliveryOutsideKhulna);
   if (!/^[0-9+\-\s]{5,20}$/.test(phone)) return err("Enter a valid phone number");
   if (whatsapp && !/^[0-9+\-\s]{5,20}$/.test(whatsapp)) return err("Enter a valid WhatsApp number or leave it empty");
@@ -28,7 +31,7 @@ export async function PUT(req) {
   if (!Object.values(DIVISIONS).flat().includes(b?.homeDistrict)) return err("Choose a valid district");
   if (![inside, outside].every((n) => Number.isInteger(n) && n >= 0 && n <= 5000)) return err("Delivery charges must be whole numbers between 0 and 5000");
   await connectDB();
-  await Settings.updateOne({ key: "main" }, { $set: { phone, whatsapp, email, address, hours, facebook, instagram, gaId, pixelId, gscVerification, announcements, homeDistrict: b.homeDistrict, deliveryInsideKhulna: inside, deliveryOutsideKhulna: outside } }, { upsert: true });
+  await Settings.updateOne({ key: "main" }, { $set: { phone, whatsapp, email, address, hours, facebook, instagram, bkashNumber, nagadNumber, rocketNumber, gaId, pixelId, gscVerification, announcements, homeDistrict: b.homeDistrict, deliveryInsideKhulna: inside, deliveryOutsideKhulna: outside } }, { upsert: true });
   refreshSite("settings");
   return NextResponse.json({ ok: true });
 }

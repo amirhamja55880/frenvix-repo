@@ -138,7 +138,7 @@ function Privacy({ s }) {
         <div className="prose">
           <p className="muted small">Last updated: November 2026</p>
           <h2>What we collect</h2>
-          <p>When you place an order we collect your name, phone number, email address, delivery address (division, district, thana and full address), any note you add, and the details of your order. You do not need an account, and we do not collect card details.</p>
+          <p>When you place an order we collect your name, phone number, email address, delivery address (division, district, thana and full address), any note you add, and the details of your order. If you pay by bKash, Nagad or Rocket we also keep the number you sent money from and the Transaction ID, so we can verify your payment. You do not need an account, and we do not collect card details.</p>
           <h2>Why we collect it</h2>
           <ul>
             <li>To confirm, pack and deliver your order.</li>
@@ -150,7 +150,7 @@ function Privacy({ s }) {
           <h2>How we protect it</h2>
           <p>Your information is stored in a secured database with restricted access, and our admin area is protected by a private login. We keep order records for as long as we need them to support you and to meet our business and legal obligations.</p>
           <h2>Cookies and browser storage</h2>
-          <p>Your cart and recent order details are saved in your own browser so they are not lost when you refresh the page. If we add analytics or advertising tools in the future, we will update this page.</p>
+          <p>Your cart and recent order details are saved in your own browser so they are not lost when you refresh the page. We also use Google Analytics and the Meta (Facebook) Pixel. They set cookies and receive information such as the pages you view and whether you add an item to the cart or place an order, so we can understand how the shop is used and measure our advertising. They do not receive your name, phone number or address from us. You can block these tools with your browser settings or an ad blocker.</p>
           <h2>Your choices</h2>
           <p>You can ask us to correct or delete your information by contacting us. We may need to keep some records where the law or our accounts require it.</p>
           <h2>Contact</h2>

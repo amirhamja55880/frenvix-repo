@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 
 const STATUSES = ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"];
 
-export default function OrderActions({ orderId, status, paymentStatus }) {
+export default function OrderActions({ orderId, status, paymentStatus, manual }) {
   const router = useRouter();
   const [sel, setSel] = useState(status);
   const [notify, setNotify] = useState(true);
@@ -35,9 +35,16 @@ export default function OrderActions({ orderId, status, paymentStatus }) {
       <button className="btn dark full" style={{ marginTop: 0 }} disabled={busy || locked || sel === status} onClick={() => save({ status: sel, notify })}>Update status</button>
       {locked && <p className="muted small" style={{ marginTop: 8 }}>Cancelled orders cannot be changed.</p>}
       <hr />
-      <button className="btn outline full" style={{ marginTop: 0 }} disabled={busy} onClick={() => save({ paymentStatus: paymentStatus === "Paid" ? "Unpaid" : "Paid" })}>
-        {paymentStatus === "Paid" ? "Mark as unpaid" : "Mark as paid"}
-      </button>
+      {manual ? (
+        <>
+          <button className="btn dark full" style={{ marginTop: 0 }} disabled={busy || paymentStatus === "Paid"} onClick={() => save({ paymentStatus: "Paid" })}>Payment received: mark as paid</button>
+          <button className="btn outline full" disabled={busy || paymentStatus === "Unpaid"} onClick={() => save({ paymentStatus: "Unpaid" })}>TrxID not found: mark as unpaid</button>
+        </>
+      ) : (
+        <button className="btn outline full" style={{ marginTop: 0 }} disabled={busy} onClick={() => save({ paymentStatus: paymentStatus === "Paid" ? "Unpaid" : "Paid" })}>
+          {paymentStatus === "Paid" ? "Mark as unpaid" : "Mark as paid"}
+        </button>
+      )}
       <button className="btn outline full" onClick={() => window.print()}>Print invoice</button>
       {msg && <p className="note" role="status" style={{ marginBottom: 0 }}>{msg}</p>}
     </div>

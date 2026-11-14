@@ -23,7 +23,7 @@ const giveBack = async (done) => { for (const i of done) await Product.updateOne
 const toClient = (d) => ({
   id: d.orderId, name: d.name, phone: d.phone, email: d.email, division: d.division, district: d.district, thana: d.thana,
   address: d.address, note: d.note, items: d.items, subtotal: d.subtotal, fee: d.deliveryFee, total: d.total,
-  paymentMethod: d.paymentMethod, paymentStatus: d.paymentStatus, status: d.status, createdAt: d.createdAt,
+  paymentMethod: d.paymentMethod, paymentStatus: d.paymentStatus, trxId: d.trxId, payNumber: d.payNumber, status: d.status, createdAt: d.createdAt,
 });
 
 export async function POST(req) {
@@ -40,6 +40,12 @@ export async function POST(req) {
   if (d.address.length < 10) return fail("Enter your full address");
   const paymentMethod = String(b.paymentMethod || "COD");
   if (!PAYMENT_METHODS.some((m) => m.id === paymentMethod)) return fail("Choose a valid payment method");
+  const manual = Boolean(PAYMENT_METHODS.find((m) => m.id === paymentMethod)?.manual);
+  const payNumber = clean(b.payNumber, 12).replace(/\s/g, ""), trxId = clean(b.trxId, 20).toUpperCase().replace(/\s/g, "");
+  if (manual) {
+    if (!/^01[3-9]\d{8}\d?$/.test(payNumber)) return fail("Enter the mobile number you sent the money from");
+    if (!/^[A-Z0-9]{6,20}$/.test(trxId)) return fail("Enter a valid Transaction ID (TrxID) from your payment message");
+  }
   if (paymentMethod === "Online" && !sslcReady()) return fail("Online payment is not available right now. Please choose cash on delivery");
   if (!Array.isArray(b.items) || !b.items.length || b.items.length > 20) return fail("Your cart is empty");
 
@@ -47,6 +53,10 @@ export async function POST(req) {
   try {
     await connectDB();
     const settings = await getSettings();
+    if (manual) {
+      if (!settings[paymentMethod.toLowerCase() + "Number"]) return fail(`${paymentMethod} payment is not available right now. Please choose another method`);
+      if (await Order.exists({ trxId, status: { $ne: "Cancelled" } })) return fail("This Transaction ID has already been used for another order");
+    }
 
     // Prices and stock always come from the database, never from the browser.
     const found = await Product.find(await visibleQuery({ slug: { $in: b.items.map((i) => String(i?.slug)) } })).lean();
@@ -70,7 +80,7 @@ export async function POST(req) {
     const fee = d.district === settings.homeDistrict ? settings.deliveryInsideKhulna : settings.deliveryOutsideKhulna;
     let doc = null;
     for (let t = 0; t < 5 && !doc; t++) {
-      try { doc = await Order.create({ ...d, orderId: newId(), items, subtotal, deliveryFee: fee, total: subtotal + fee, paymentMethod }); }
+      try { doc = await Order.create({ ...d, orderId: newId(), items, subtotal, deliveryFee: fee, total: subtotal + fee, paymentMethod, paymentStatus: manual ? "Verifying" : "Unpaid", ...(manual ? { payNumber, trxId } : {}) }); }
       catch (e) { if (e.code !== 11000) throw e; }
     }
     if (!doc) { await giveBack(reserved); return fail("Could not create order, please try again", 500); }

@@ -59,7 +59,7 @@ export default function ProductClient({ p }) {
         <dl className="specs">
           <div><dt>Fabric</dt><dd>{p.fabric}</dd></div>
           <div><dt>Size chart (chest)</dt><dd>S 38 · M 40 · L 42 · XL 44 · XXL 46 inches</dd></div>
-          <div><dt>Delivery</dt><dd>2–4 days. Cash on delivery{site.onlinePayment ? " or pay online" : ""}.</dd></div>
+          <div><dt>Delivery</dt><dd>2–4 days. Cash on delivery{site.bkashNumber || site.nagadNumber || site.rocketNumber ? ", bKash, Nagad or Rocket" : ""}.</dd></div>
         </dl>
       </div>
     </div>

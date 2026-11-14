@@ -34,7 +34,7 @@ export default async function Home() {
   ];
   const faq = [
     ["How long does delivery take?", `Usually 2 to 4 days after your order is confirmed. Delivery costs ${taka(s.deliveryInsideKhulna)} inside ${s.homeDistrict} and ${taka(s.deliveryOutsideKhulna)} everywhere else in Bangladesh.`],
-    ["How do I pay?", "Cash on delivery: you pay the courier when the order arrives. Mobile payment with bKash, Nagad and Rocket is coming soon."],
+    ["How do I pay?", "Cash on delivery: you pay the courier when the order arrives. Or send money by bKash, Nagad or Rocket and enter your Transaction ID at checkout. We verify it before we confirm your order."],
     ["What if the size does not fit?", "Tell us within 3 days of delivery and we will arrange an exchange for another size, as long as the item is unworn with tags attached. See the return policy for details."],
     ["How can I track my order?", "Open Track order and enter your order ID and phone number. Your order ID is also in the confirmation email we send you."],
     ["Do I need an account?", "No. You can order as a guest with just your delivery details."],

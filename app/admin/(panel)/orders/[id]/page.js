@@ -25,6 +25,15 @@ export default async function OrderPage({ params }) {
             <tr><td colSpan={2}><b>Total</b></td><td style={{ textAlign: "right" }}><b>{taka(o.total)}</b></td></tr>
           </tbody></table>
           <p className="muted small" style={{ marginTop: 10 }}>Placed {fmtDate(o.createdAt)} · Payment: {cod ? "Cash on delivery" : o.paymentMethod} ({o.paymentStatus})</p>
+          {o.trxId && (
+            <div className="note" style={{ marginTop: 12 }}>
+              <b>{o.paymentMethod} payment to verify</b><br />
+              Amount to match: <b>{taka(o.total)}</b><br />
+              Sent from: <b>{o.payNumber}</b><br />
+              Transaction ID: <b>{o.trxId}</b><br />
+              Status: <b>{o.paymentStatus}</b>
+            </div>
+          )}
         </div>
         <div>
           <div className="panel">
@@ -35,7 +44,7 @@ export default async function OrderPage({ params }) {
           </div>
           <div className="panel noprint">
             <h2>Manage order</h2>
-            <OrderActions orderId={o.orderId} status={o.status} paymentStatus={o.paymentStatus} />
+            <OrderActions orderId={o.orderId} status={o.status} paymentStatus={o.paymentStatus} manual={Boolean(o.trxId)} />
           </div>
         </div>
       </div>
