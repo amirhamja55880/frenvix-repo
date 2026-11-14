@@ -50,6 +50,15 @@ export default function SettingsForm({ initial }) {
         </div>
       </div>
       <div className="panel">
+        <h2>Tracking &amp; SEO</h2>
+        <p className="muted small" style={{ marginTop: -6 }}>Paste the IDs from Google and Meta. Leave a field empty to switch that tool off.</p>
+        <div className="row2">
+          <div className="field"><label htmlFor="ga">Google Analytics 4 ID</label><input id="ga" value={f.gaId || ""} onChange={set("gaId")} placeholder="G-XXXXXXXXXX" /></div>
+          <div className="field"><label htmlFor="px">Meta Pixel ID</label><input id="px" value={f.pixelId || ""} onChange={set("pixelId")} inputMode="numeric" placeholder="1234567890123456" /></div>
+        </div>
+        <div className="field"><label htmlFor="gs">Google Search Console verification code</label><input id="gs" value={f.gscVerification || ""} onChange={set("gscVerification")} placeholder="only the code after content=" /></div>
+      </div>
+      <div className="panel">
         <h2>Delivery charge</h2>
         <div className="field"><label htmlFor="hd">Home district (lower charge applies here)</label><select id="hd" value={f.homeDistrict} onChange={set("homeDistrict")}>{DISTRICTS.map((d) => <option key={d}>{d}</option>)}</select></div>
         <div className="row2">

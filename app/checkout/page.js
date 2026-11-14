@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
 import { DIVISIONS } from "@/lib/bd-geo";
 import { taka } from "@/lib/products";
+import { track } from "@/lib/track";
 
 const EMPTY = {
   name: "",
@@ -41,6 +42,7 @@ export default function Checkout() {
       if (s) setF({ ...EMPTY, ...s });
     } catch {}
   }, []);
+  useEffect(() => { if (ready && items.length) track.beginCheckout(items, subtotal); }, [ready]); // eslint-disable-line react-hooks/exhaustive-deps
   const set = (k) => (e) => setF((p) => ({ ...p, [k]: e.target.value }));
   const setDivision = (e) =>
     setF((p) => ({ ...p, division: e.target.value, district: "" }));

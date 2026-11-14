@@ -9,6 +9,7 @@ import { PAYMENT_METHODS } from "@/lib/products";
 import { DIVISIONS } from "@/lib/bd-geo";
 import { sendCustomerEmail, sendAdminEmail } from "@/lib/email";
 import { limited, clientIp } from "@/lib/rateLimit";
+import { sslcReady, startPayment } from "@/lib/sslcommerz";
 
 export const runtime = "nodejs";
 
@@ -22,7 +23,7 @@ const giveBack = async (done) => { for (const i of done) await Product.updateOne
 const toClient = (d) => ({
   id: d.orderId, name: d.name, phone: d.phone, email: d.email, division: d.division, district: d.district, thana: d.thana,
   address: d.address, note: d.note, items: d.items, subtotal: d.subtotal, fee: d.deliveryFee, total: d.total,
-  paymentMethod: d.paymentMethod, status: d.status, createdAt: d.createdAt,
+  paymentMethod: d.paymentMethod, paymentStatus: d.paymentStatus, status: d.status, createdAt: d.createdAt,
 });
 
 export async function POST(req) {
@@ -39,6 +40,7 @@ export async function POST(req) {
   if (d.address.length < 10) return fail("Enter your full address");
   const paymentMethod = String(b.paymentMethod || "COD");
   if (!PAYMENT_METHODS.some((m) => m.id === paymentMethod)) return fail("Choose a valid payment method");
+  if (paymentMethod === "Online" && !sslcReady()) return fail("Online payment is not available right now. Please choose cash on delivery");
   if (!Array.isArray(b.items) || !b.items.length || b.items.length > 20) return fail("Your cart is empty");
 
   const reserved = [];
@@ -72,6 +74,19 @@ export async function POST(req) {
       catch (e) { if (e.code !== 11000) throw e; }
     }
     if (!doc) { await giveBack(reserved); return fail("Could not create order, please try again", 500); }
+
+    // Online payment: send the customer to SSLCommerz. Emails go out only after the payment is confirmed.
+    if (paymentMethod === "Online") {
+      try {
+        const gatewayUrl = await startPayment(doc);
+        return NextResponse.json({ order: toClient(doc), gatewayUrl });
+      } catch (e) {
+        console.error("Payment start error:", e.message);
+        await Order.deleteOne({ _id: doc._id });
+        await giveBack(reserved);
+        return fail("Could not start online payment. Please try again or choose cash on delivery", 502);
+      }
+    }
 
     // The order is already saved. A failed email must never fail the order.
     const [c, a] = await Promise.allSettled([sendCustomerEmail(doc), sendAdminEmail(doc)]);

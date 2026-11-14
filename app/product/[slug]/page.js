@@ -2,13 +2,22 @@ import { notFound } from "next/navigation";
 import ProductClient from "@/components/ProductClient";
 import ProductCard from "@/components/ProductCard";
 import { getProduct, getProducts } from "@/lib/data";
+import { productJsonLd } from "@/lib/seo";
 
 export const revalidate = 60;
 export async function generateStaticParams() { return (await getProducts()).map((p) => ({ slug: p.slug })); }
 
 export async function generateMetadata({ params }) {
   const p = await getProduct(params.slug);
-  return p ? { title: p.name, description: p.description } : {};
+  if (!p) return {};
+  const desc = (p.description || `${p.name} by FRENVIX. Cash on delivery across Bangladesh.`).slice(0, 160);
+  const img = p.images?.[0];
+  return {
+    title: p.name, description: desc,
+    alternates: { canonical: `/product/${p.slug}` },
+    openGraph: { type: "website", title: p.name, description: desc, url: `/product/${p.slug}`, images: img ? [{ url: img }] : undefined },
+    twitter: { card: "summary_large_image", title: p.name, description: desc, images: img ? [img] : undefined },
+  };
 }
 
 export default async function ProductPage({ params }) {
@@ -18,6 +27,7 @@ export default async function ProductPage({ params }) {
   const related = all.filter((x) => x.slug !== p.slug).sort((a, b) => (b.category === p.category) - (a.category === p.category)).slice(0, 4);
   return (
     <div className="wrap section">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd(p)) }} />
       <ProductClient p={p} />
       {related.length > 0 && (
         <>

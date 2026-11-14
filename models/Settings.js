@@ -10,6 +10,9 @@ const SettingsSchema = new mongoose.Schema(
     hours: String,
     facebook: String,
     instagram: String,
+    gaId: String, // Google Analytics 4 id, e.g. G-XXXXXXXXXX
+    pixelId: String, // Meta (Facebook) Pixel id, digits only
+    gscVerification: String, // Google Search Console verification token
     announcements: [String], // messages in the moving bar at the top
     homeDistrict: { type: String, default: "Khulna" },
     deliveryInsideKhulna: { type: Number, default: 60 },

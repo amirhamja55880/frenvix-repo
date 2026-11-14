@@ -15,6 +15,7 @@ export default function Payment() {
   const [busy, setBusy] = useState(false);
   const [fail, setFail] = useState("");
   const placed = useRef(false);
+  const [notice, setNotice] = useState("");
 
   useEffect(() => {
     try {
@@ -22,6 +23,12 @@ export default function Payment() {
     } catch {
       setInfo(null);
     }
+  }, []);
+  useEffect(() => {
+    const st = new URLSearchParams(window.location.search).get("status");
+    if (st === "failed") setNotice("Your payment could not be confirmed, so no money was taken for this order. Please try again or choose cash on delivery.");
+    if (st === "fail") setNotice("The payment failed. Please try again or choose cash on delivery.");
+    if (st === "cancel") setNotice("You cancelled the payment. Your cart is still here if you want to try again.");
   }, []);
   useEffect(() => {
     if (info === null) router.replace("/checkout");
@@ -41,7 +48,8 @@ export default function Payment() {
 
   const inside = info.district === site.homeDistrict;
   const fee = inside ? site.deliveryInsideKhulna : site.deliveryOutsideKhulna;
-  const chosen = PAYMENT_METHODS.find((m) => m.id === method);
+  const methods = PAYMENT_METHODS.filter((m) => !m.online || site.onlinePayment);
+  const chosen = methods.find((m) => m.id === method);
 
   const place = async () => {
     setBusy(true);
@@ -56,6 +64,11 @@ export default function Payment() {
       if (!res.ok) throw new Error(data.error || "Order failed");
       const all = JSON.parse(localStorage.getItem("frx_orders") || "[]");
       localStorage.setItem("frx_orders", JSON.stringify([...all, data.order]));
+      if (data.gatewayUrl) {
+        // Online payment: keep the cart until the payment succeeds, then go to the SSLCommerz page.
+        window.location.href = data.gatewayUrl;
+        return;
+      }
       placed.current = true;
       sessionStorage.removeItem("frx_checkout");
       clear();
@@ -100,7 +113,7 @@ export default function Payment() {
             <b>{taka(fee)}</b>.
           </p>
           <h2 className="subhead">Payment method</h2>
-          {PAYMENT_METHODS.map((m) => (
+          {methods.map((m) => (
             <label key={m.id} className={`pay ${method === m.id ? "on" : ""}`}>
               <input
                 type="radio"
@@ -110,15 +123,19 @@ export default function Payment() {
               />
               <span>
                 {m.label}
-                {m.demo && <i className="demo">Demo</i>}
               </span>
             </label>
           ))}
-          {chosen?.demo && (
+          {chosen?.online && (
             <p className="note">
-              Online payment is not active yet. Your order will be placed as
-              pending and our representative will confirm {chosen.label} payment
-              details when they contact you. You are not charged now.
+              You will go to the secure SSLCommerz page to pay with bKash,
+              Nagad, Rocket, a card or net banking. Your order is confirmed
+              after the payment succeeds.
+            </p>
+          )}
+          {notice && (
+            <p className="error" role="alert">
+              {notice}
             </p>
           )}
           {fail && (
@@ -151,7 +168,7 @@ export default function Payment() {
             <span>{taka(subtotal + fee)}</span>
           </div>
           <button className="btn dark full" onClick={place} disabled={busy}>
-            {busy ? "Placing order…" : "Place order"}
+            {busy ? (method === "Online" ? "Opening payment page…" : "Placing order…") : method === "Online" ? "Pay now" : "Place order"}
           </button>
         </aside>
       </div>

@@ -3,9 +3,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { taka } from "@/lib/products";
 import CopyButton from "@/components/CopyButton";
+import { useCart } from "@/components/CartProvider";
+import { track } from "@/lib/track";
 
 export default function OrderDone({ params }) {
   const [o, setO] = useState(undefined);
+  const { clear } = useCart();
+  const [paidNow, setPaidNow] = useState(false);
   useEffect(() => {
     try {
       setO(
@@ -17,6 +21,17 @@ export default function OrderDone({ params }) {
       setO(null);
     }
   }, [params.id]);
+  useEffect(() => {
+    if (!o) return;
+    const paid = new URLSearchParams(window.location.search).get("paid") === "1";
+    if (paid) {
+      // Back from SSLCommerz after a verified payment.
+      setPaidNow(true);
+      clear();
+      try { sessionStorage.removeItem("frx_checkout"); } catch {}
+    }
+    if ((o.paymentMethod || "COD") === "COD" || paid) track.purchase(o);
+  }, [o]); // eslint-disable-line react-hooks/exhaustive-deps
   if (o === undefined) return <div className="wrap section" />;
   if (!o)
     return (
@@ -28,9 +43,11 @@ export default function OrderDone({ params }) {
       </div>
     );
   const cod = (o.paymentMethod || "COD") === "COD";
+  const online = o.paymentMethod === "Online";
+  const paid = online && (paidNow || o.paymentStatus === "Paid");
   return (
     <div className="wrap section narrow">
-      <span className="pill">Pending</span>
+      <span className="pill">{paid ? "Paid" : online ? "Awaiting payment" : "Pending"}</span>
       <h1 className="pagetitle">Thank you, {o.name.split(" ")[0]}</h1>
       <div className="idbox">
         <span className="muted small">Your order ID</span>
@@ -41,8 +58,11 @@ export default function OrderDone({ params }) {
         Keep this ID and your phone number to track your order.
       </p>
       <p className="note">
-        Your order is pending. One of our representatives will contact you
-        shortly. A confirmation was sent to {o.email}.
+        {paid
+          ? `Payment received. Our team will confirm your order shortly. A confirmation was sent to ${o.email}.`
+          : online
+            ? "We have not received your payment yet. If you already paid, please wait a few minutes and check your email."
+            : `Your order is pending. One of our representatives will contact you shortly. A confirmation was sent to ${o.email}.`}
       </p>
       <div className="summary">
         {o.items.map((i, k) => (
@@ -61,11 +81,11 @@ export default function OrderDone({ params }) {
         <div className="l">
           <span>Payment</span>
           <span>
-            {cod ? "Cash on delivery" : `${o.paymentMethod} (to be confirmed)`}
+            {cod ? "Cash on delivery" : online ? (paid ? "Paid online" : "Online payment (awaiting)") : `${o.paymentMethod} (to be confirmed)`}
           </span>
         </div>
         <div className="l total">
-          <span>{cod ? "Pay on delivery" : "Total"}</span>
+          <span>{cod ? "Pay on delivery" : paid ? "Total paid" : "Total"}</span>
           <span>{taka(o.total)}</span>
         </div>
       </div>

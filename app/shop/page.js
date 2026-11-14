@@ -3,7 +3,7 @@ import ProductCard from "@/components/ProductCard";
 import CategoryTree from "@/components/CategoryTree";
 import { getProducts, getCategories } from "@/lib/data";
 
-export const metadata = { title: "Shop" };
+export const metadata = { title: "Shop", description: "Shop heavyweight hoodies, sweatshirts and henleys. Cash on delivery across Bangladesh.", alternates: { canonical: "/shop" } };
 
 const href = ({ cat, sub, sort }) => {
   const p = new URLSearchParams();
