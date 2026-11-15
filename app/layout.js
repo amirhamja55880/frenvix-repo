@@ -17,7 +17,7 @@ export async function generateMetadata() {
   return {
     metadataBase: new URL(base),
     title: { default: "FRENVIX | Premium Hoodies, Sweatshirts & Henleys in Bangladesh", template: "%s | FRENVIX" },
-    description: "Buy heavyweight hoodies, sweatshirts and henleys online in Bangladesh. Cash on delivery, 3-day size exchange and delivery across all districts.",
+    description: "Buy heavyweight hoodies, sweatshirts and henleys online in Bangladesh. Cash on delivery, size exchange and delivery across all districts.",
     openGraph: { type: "website", siteName: "FRENVIX", locale: "en_BD", title: "FRENVIX | Premium Hoodies, Sweatshirts & Henleys in Bangladesh", description: "Heavyweight hoodies, sweatshirts and henleys delivered across Bangladesh. Cash on delivery.", images: [{ url: "/logo.png" }] },
     twitter: { card: "summary_large_image" },
     verification: s.gscVerification ? { google: s.gscVerification } : undefined,

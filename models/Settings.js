@@ -10,6 +10,7 @@ const SettingsSchema = new mongoose.Schema(
     hours: String,
     facebook: String,
     instagram: String,
+    allowOrderDelete: { type: Boolean, default: false }, // testing switch: lets the admin delete orders
     bkashNumber: String,
     nagadNumber: String,
     rocketNumber: String,

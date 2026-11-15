@@ -43,7 +43,7 @@ function About({ s }) {
             <li>You place an order on the website. There is no account to create.</li>
             <li>Our team calls you to confirm the order and your delivery details.</li>
             <li>We pack and send it. You can follow the order with your order ID on the <Link className="link" href="/track">Track order</Link> page.</li>
-            <li>If the size is not right, you have 3 days to ask for an exchange. See our <Link className="link" href="/return-policy">return policy</Link>.</li>
+            <li>If the size is not right, report it within 12 hours of delivery with your unboxing video. See our <Link className="link" href="/return-policy">return policy</Link>.</li>
           </ol>
         </div>
         <div className="actions" style={{ marginTop: 28 }}><Link className="btn dark" href="/shop">Shop the collection</Link><Link className="btn outline" href="/contact">Contact us</Link></div>
@@ -99,10 +99,12 @@ function Returns({ s }) {
     <>
       <Head title="Return & exchange policy" lead="Simple rules, so you know exactly what to expect if something is not right." />
       <div className="wrap sec2">
-        <div className="pbox"><div><b>3 days</b>to ask for an exchange after delivery</div><div><b>Free replacement</b>if the item is faulty or wrong</div><div><b>Unworn</b>with tags attached and unwashed</div></div>
+        <div className="pbox"><div><b>12 hours</b>to report after you receive the parcel</div><div><b>Unboxing video</b>required for every exchange or return</div><div><b>Free replacement</b>if we send a faulty or wrong item</div></div>
         <div className="prose">
           <h2>Size exchange</h2>
-          <p>If the size does not fit, contact us within 3 days of receiving your order. We will exchange it for another size, subject to stock.</p>
+          <p>If the size does not fit, contact us within 12 hours of receiving your parcel. We will exchange it for another size, subject to stock.</p>
+          <h2>Unboxing video (required)</h2>
+          <p>Please record a video while you open the parcel for the first time. The video must show the parcel being opened and the item inside. Send us this video when you report a problem. We cannot accept an exchange or return request without the unboxing video.</p>
           <h2>Conditions</h2>
           <ul>
             <li>The item must be unworn and unwashed, with the original tags attached.</li>
@@ -110,10 +112,10 @@ function Returns({ s }) {
             <li>Items showing signs of wear or washing cannot be exchanged.</li>
           </ul>
           <h2>Faulty or wrong items</h2>
-          <p>If your item arrives damaged, faulty or different from what you ordered, tell us within 3 days. Please share your order ID and a clear photo. We will replace it and cover all delivery charges.</p>
+          <p>If your item arrives damaged, faulty or different from what you ordered, tell us within 12 hours of receiving the parcel. Please share your order ID, a clear photo and your unboxing video. If we sent a different product from the one you ordered, we pay all courier charges and replace it.</p>
           <h2>How to request an exchange</h2>
           <ol>
-            <li>Contact us by phone, WhatsApp or email{phoneOk(s.phone) ? <> (<a className="link" href={telLink(s.phone)}>{s.phone}</a>)</> : null} with your order ID, your phone number and the size you need.</li>
+            <li>Contact us by phone, WhatsApp or email{phoneOk(s.phone) ? <> (<a className="link" href={telLink(s.phone)}>{s.phone}</a>)</> : null} within 12 hours of receiving the parcel, with your order ID, your phone number, the size you need and your unboxing video.</li>
             <li>We confirm the size is available and tell you how to send the item back.</li>
             <li>After we receive and check the item, we send you the new size.</li>
           </ol>

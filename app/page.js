@@ -18,7 +18,7 @@ export default async function Home() {
   const trust = [
     ["Cash on delivery", "Pay when your order arrives", <Icon key="a"><rect x="3" y="6" width="18" height="12" rx="2" /><circle cx="12" cy="12" r="2.5" /></Icon>],
     ["Delivery across Bangladesh", `${taka(s.deliveryInsideKhulna)} inside ${s.homeDistrict}, ${taka(s.deliveryOutsideKhulna)} elsewhere`, <Icon key="b"><path d="M3 7h11v9H3z" /><path d="M14 10h4l3 3v3h-7" /><circle cx="7" cy="17.5" r="1.8" /><circle cx="17" cy="17.5" r="1.8" /></Icon>],
-    ["3-day size exchange", "Wrong size? We will swap it", <Icon key="c"><path d="M4 8h13l-3-3" /><path d="M20 16H7l3 3" /></Icon>],
+    ["12-hour size exchange", "Report within 12 hours of delivery", <Icon key="c"><path d="M4 8h13l-3-3" /><path d="M20 16H7l3 3" /></Icon>],
     ["Track your order", "No account needed", <Icon key="d"><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4.5 4.5" /></Icon>],
   ];
   const why = [
@@ -35,7 +35,7 @@ export default async function Home() {
   const faq = [
     ["How long does delivery take?", `Usually 2 to 4 days after your order is confirmed. Delivery costs ${taka(s.deliveryInsideKhulna)} inside ${s.homeDistrict} and ${taka(s.deliveryOutsideKhulna)} everywhere else in Bangladesh.`],
     ["How do I pay?", "Cash on delivery: you pay the courier when the order arrives. Or send money by bKash, Nagad or Rocket and enter your Transaction ID at checkout. We verify it before we confirm your order."],
-    ["What if the size does not fit?", "Tell us within 3 days of delivery and we will arrange an exchange for another size, as long as the item is unworn with tags attached. See the return policy for details."],
+    ["What if the size does not fit?", "Tell us within 12 hours of delivery and we will arrange an exchange for another size, as long as the item is unworn with tags attached and you have an unboxing video of the parcel. See the return policy for details."],
     ["How can I track my order?", "Open Track order and enter your order ID and phone number. Your order ID is also in the confirmation email we send you."],
     ["Do I need an account?", "No. You can order as a guest with just your delivery details."],
   ];

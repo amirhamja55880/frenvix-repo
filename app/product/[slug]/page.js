@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import ProductClient from "@/components/ProductClient";
 import ProductCard from "@/components/ProductCard";
-import { getProduct, getProducts } from "@/lib/data";
+import { getProduct, getProducts, getSettings } from "@/lib/data";
 import { productJsonLd, breadcrumbJsonLd } from "@/lib/seo";
 
 export const revalidate = 60;
@@ -27,7 +27,7 @@ export default async function ProductPage({ params }) {
   const related = all.filter((x) => x.slug !== p.slug).sort((a, b) => (b.category === p.category) - (a.category === p.category)).slice(0, 4);
   return (
     <div className="wrap section">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd(p)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd(p, await getSettings())) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd(p)) }} />
       <ProductClient p={p} />
       {related.length > 0 && (

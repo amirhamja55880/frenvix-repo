@@ -4,13 +4,27 @@ import { useRouter } from "next/navigation";
 
 const STATUSES = ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"];
 
-export default function OrderActions({ orderId, status, paymentStatus, manual }) {
+export default function OrderActions({ orderId, status, paymentStatus, manual, canDelete, returnable }) {
   const router = useRouter();
   const [sel, setSel] = useState(status);
   const [notify, setNotify] = useState(true);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
   const locked = status === "Cancelled";
+  const [pw, setPw] = useState("");
+  const [back, setBack] = useState(returnable && ["Pending", "Confirmed"].includes(status));
+  const [delMsg, setDelMsg] = useState("");
+  const del = async () => {
+    if (!pw) { setDelMsg("Enter your admin password."); return; }
+    if (!confirm(`Delete order ${orderId} permanently? This cannot be undone.`)) return;
+    setBusy(true); setDelMsg("");
+    try {
+      const r = await fetch(`/api/admin/orders/${orderId}`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: pw, returnStock: back }) });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || "Failed");
+      router.push("/admin/orders"); router.refresh();
+    } catch (e) { setDelMsg(e.message); setBusy(false); }
+  };
 
   const save = async (body) => {
     if (body.status === "Cancelled" && !confirm("Cancel this order? Stock will be returned and this cannot be undone.")) return;
@@ -47,6 +61,21 @@ export default function OrderActions({ orderId, status, paymentStatus, manual })
       )}
       <button className="btn outline full" onClick={() => window.print()}>Print invoice</button>
       {msg && <p className="note" role="status" style={{ marginBottom: 0 }}>{msg}</p>}
+      {canDelete && (
+        <>
+          <hr />
+          <h3 style={{ margin: "0 0 8px", fontSize: 15, color: "#b91c1c" }}>Delete order</h3>
+          <p className="muted small" style={{ marginTop: 0 }}>Testing mode is on. Deleting is permanent.</p>
+          {returnable && (
+            <label style={{ display: "flex", gap: 8, alignItems: "center", fontWeight: 400, margin: "0 0 10px" }}>
+              <input type="checkbox" style={{ width: "auto" }} checked={back} onChange={(e) => setBack(e.target.checked)} /> Return the items to stock
+            </label>
+          )}
+          <div className="field"><label htmlFor="dpw">Your admin password</label><input id="dpw" type="password" autoComplete="current-password" value={pw} onChange={(e) => setPw(e.target.value)} /></div>
+          <button className="btn outline full" style={{ marginTop: 0, color: "#b91c1c", borderColor: "#b91c1c" }} disabled={busy} onClick={del}>Delete this order</button>
+          {delMsg && <p className="error" role="alert" style={{ marginBottom: 0 }}>{delMsg}</p>}
+        </>
+      )}
     </div>
   );
 }

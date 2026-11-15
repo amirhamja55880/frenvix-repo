@@ -75,6 +75,14 @@ export default function SettingsForm({ initial }) {
           <div className="field"><label htmlFor="out">Outside {f.homeDistrict} (৳)</label><input id="out" inputMode="numeric" value={f.deliveryOutsideKhulna} onChange={set("deliveryOutsideKhulna")} /></div>
         </div>
       </div>
+      <div className="panel" style={{ borderColor: f.allowOrderDelete ? "#b91c1c" : undefined }}>
+        <h2>Deleting orders (for testing)</h2>
+        <p className="muted small" style={{ marginTop: -6 }}>When this is on, every order page shows a "Delete order" box. Each delete asks for your admin password and cannot be undone. Turn it on while you test, and turn it off before real customers start ordering.</p>
+        <label style={{ display: "flex", gap: 8, alignItems: "center", fontWeight: 400, margin: 0 }}>
+          <input type="checkbox" style={{ width: "auto" }} checked={f.allowOrderDelete === true} onChange={(e) => setF({ ...f, allowOrderDelete: e.target.checked })} /> Allow deleting orders
+        </label>
+        {f.allowOrderDelete && <p className="error" style={{ marginBottom: 0 }}>Order deleting is ON. Press "Save settings" to apply it.</p>}
+      </div>
       {msg && <p className={bad ? "error" : "note"} role="status">{msg}</p>}
       <button className="btn dark" onClick={save} disabled={busy}>{busy ? "Saving…" : "Save settings"}</button>
     </div>

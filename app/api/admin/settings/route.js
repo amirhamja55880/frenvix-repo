@@ -31,7 +31,7 @@ export async function PUT(req) {
   if (!Object.values(DIVISIONS).flat().includes(b?.homeDistrict)) return err("Choose a valid district");
   if (![inside, outside].every((n) => Number.isInteger(n) && n >= 0 && n <= 5000)) return err("Delivery charges must be whole numbers between 0 and 5000");
   await connectDB();
-  await Settings.updateOne({ key: "main" }, { $set: { phone, whatsapp, email, address, hours, facebook, instagram, bkashNumber, nagadNumber, rocketNumber, gaId, pixelId, gscVerification, announcements, homeDistrict: b.homeDistrict, deliveryInsideKhulna: inside, deliveryOutsideKhulna: outside } }, { upsert: true });
+  await Settings.updateOne({ key: "main" }, { $set: { phone, whatsapp, email, address, hours, facebook, instagram, allowOrderDelete: b?.allowOrderDelete === true, bkashNumber, nagadNumber, rocketNumber, gaId, pixelId, gscVerification, announcements, homeDistrict: b.homeDistrict, deliveryInsideKhulna: inside, deliveryOutsideKhulna: outside } }, { upsert: true });
   refreshSite("settings");
   return NextResponse.json({ ok: true });
 }

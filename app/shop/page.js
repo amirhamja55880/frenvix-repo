@@ -15,7 +15,7 @@ export async function generateMetadata({ searchParams }) {
   return {
     robots: empty ? { index: false, follow: true } : undefined,
     title: name ? `${name} in Bangladesh` : "Shop",
-    description: name ? `Buy ${name} online in Bangladesh from FRENVIX. Cash on delivery, 3-day size exchange and delivery across all districts.` : "Shop heavyweight hoodies, sweatshirts and henleys. Cash on delivery across Bangladesh.",
+    description: name ? `Buy ${name} online in Bangladesh from FRENVIX. Cash on delivery, size exchange and delivery across all districts.` : "Shop heavyweight hoodies, sweatshirts and henleys. Cash on delivery across Bangladesh.",
     alternates: { canonical: "/shop" + (q.toString() ? `?${q}` : "") },
   };
 }

@@ -4,12 +4,14 @@ import { connectDB } from "@/lib/db";
 import Order from "@/models/Order";
 import { taka } from "@/lib/products";
 import { fmtDate } from "@/lib/admin";
+import Settings from "@/models/Settings";
 import OrderActions from "./OrderActions";
 
 export default async function OrderPage({ params }) {
   await connectDB();
   const o = await Order.findOne({ orderId: params.id }).lean();
   if (!o) notFound();
+  const st = await Settings.findOne({ key: "main" }).select("allowOrderDelete").lean();
   const cod = o.paymentMethod === "COD";
   return (
     <>
@@ -44,7 +46,7 @@ export default async function OrderPage({ params }) {
           </div>
           <div className="panel noprint">
             <h2>Manage order</h2>
-            <OrderActions orderId={o.orderId} status={o.status} paymentStatus={o.paymentStatus} manual={Boolean(o.trxId)} />
+            <OrderActions orderId={o.orderId} status={o.status} paymentStatus={o.paymentStatus} manual={Boolean(o.trxId)} canDelete={Boolean(st?.allowOrderDelete)} returnable={!o.stockRestored} />
           </div>
         </div>
       </div>

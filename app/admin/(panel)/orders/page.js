@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/db";
 import Order from "@/models/Order";
 import { taka } from "@/lib/products";
 import { STATUSES, fmtDate, esc } from "@/lib/admin";
+import Settings from "@/models/Settings";
 
 const PER = 30;
 
@@ -15,6 +16,7 @@ export default async function Orders({ searchParams }) {
   if (q) { const re = new RegExp(esc(q), "i"); filter.$or = [{ orderId: re }, { phone: re }, { name: re }]; }
 
   await connectDB();
+  const st = await Settings.findOne({ key: "main" }).select("allowOrderDelete").lean();
   const [list, total, counts] = await Promise.all([
     Order.find(filter).sort({ createdAt: -1 }).skip((page - 1) * PER).limit(PER).lean(),
     Order.countDocuments(filter),
@@ -28,6 +30,7 @@ export default async function Orders({ searchParams }) {
   return (
     <>
       <h1>Orders</h1>
+      {st?.allowOrderDelete && <p className="error" style={{ marginTop: 0 }}>Testing mode: deleting orders is ON. Open an order to delete it. Turn it off in Settings before going live.</p>}
       <div className="chips" style={{ marginBottom: 14 }}>
         <Link className={`chip ${!status ? "on" : ""}`} href={url({ status: "", page: "" })}>All ({all})</Link>
         {STATUSES.map((s) => <Link key={s} className={`chip ${status === s ? "on" : ""}`} href={url({ status: s, page: "" })}>{s} ({count[s] || 0})</Link>)}
