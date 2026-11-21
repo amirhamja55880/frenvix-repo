@@ -358,3 +358,9 @@ body{overflow-x:clip}
 
 /* Visually hidden but readable by Google and screen readers (used for the home page main heading) */
 .vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* Product description: paragraphs and bullet lists */
+.desc p{margin:0 0 10px}
+.desc ul{margin:0 0 12px;padding-left:20px}
+.desc li{margin:3px 0}
+.desc strong{color:#111}

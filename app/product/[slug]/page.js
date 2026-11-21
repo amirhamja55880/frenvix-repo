@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import ProductClient from "@/components/ProductClient";
 import ProductCard from "@/components/ProductCard";
 import { getProduct, getProducts, getSettings } from "@/lib/data";
-import { productJsonLd, breadcrumbJsonLd } from "@/lib/seo";
+import { productJsonLd, breadcrumbJsonLd, plainText } from "@/lib/seo";
 
 export const revalidate = 60;
 export async function generateStaticParams() { return (await getProducts()).map((p) => ({ slug: p.slug })); }
@@ -10,7 +10,7 @@ export async function generateStaticParams() { return (await getProducts()).map(
 export async function generateMetadata({ params }) {
   const p = await getProduct(params.slug);
   if (!p) return {};
-  const desc = (p.description || `${p.name} by FRENVIX. Cash on delivery across Bangladesh.`).slice(0, 160);
+  const desc = (plainText(p.description) || `${p.name} by FRENVIX. Cash on delivery across Bangladesh.`).slice(0, 160);
   const img = p.images?.[0];
   return {
     title: /frenvix/i.test(p.name) ? { absolute: `${p.name} | Buy Online in Bangladesh` } : `${p.name} | Buy Online in Bangladesh`, description: desc,

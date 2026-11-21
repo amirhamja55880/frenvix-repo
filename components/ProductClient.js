@@ -5,6 +5,7 @@ import ProductImage from "./ProductImage";
 import { useCart } from "./CartProvider";
 import { SIZES, taka, cdn } from "@/lib/products";
 import { track } from "@/lib/track";
+import Description from "./Description";
 import { useSite } from "./SiteProvider";
 
 export default function ProductClient({ p }) {
@@ -44,7 +45,7 @@ export default function ProductClient({ p }) {
         <p className="muted"><Link href="/shop">Shop</Link> / {p.category}</p>
         <h1>{p.name}</h1>
         <p className="price big">{taka(p.price)}{p.oldPrice && <s>{taka(p.oldPrice)}</s>}</p>
-        <p className="desc">{p.description}</p>
+        <Description text={p.description} />
         <p className="label">Color: <b>{color}</b></p>
         <div className="opts">{p.colors.map((c) => <button key={c.name} aria-label={c.name} aria-pressed={c.name === color} className={`sw ${c.name === color ? "on" : ""}`} style={{ background: c.hex }} onClick={() => pickColor(c.name)} />)}</div>
         <p className="label">Size</p>
